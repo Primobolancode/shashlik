@@ -1,0 +1,11 @@
+asyncpg
+SQLAlchemy
+alembic
+python-dotenv
+uvicorn
+fastapi
+pydantic_settings
+pydantic[email]
+python-jose
+passlib
+python-multipart

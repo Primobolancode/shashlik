@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  fast-api:
+    build:
+      context: shashlik
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./shashlik:/shashlik
+    environment:
+      - DB_HOST=db
+      - DB_NAME=shashlik
+      - DB_USER=admin
+      - DB_PASS=admin
+    command: >
+      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15.1-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=shashlik
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      
+      
+
+

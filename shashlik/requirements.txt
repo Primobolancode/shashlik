@@ -1,6 +1,8 @@
 asyncpg
-SQLAlchemy
-alembic
+# SQLAlchemy
+# alembic
+pymongo
+mongoengine
 python-dotenv
 uvicorn
 fastapi
@@ -9,3 +11,5 @@ pydantic[email]
 python-jose
 passlib
 python-multipart
+motor
+

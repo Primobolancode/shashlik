@@ -16,16 +16,36 @@ services:
     command: >
       sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     depends_on:
-      - db
+      - mongo
 
-  db:
-    image: postgres:15.1-alpine
+#  db:
+#    image: postgres:15.1-alpine
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      - POSTGRES_DB=shashlik
+#      - POSTGRES_USER=admin
+#      - POSTGRES_PASSWORD=admin
+
+  mongo:
+    image: mongo:latest
     ports:
-      - "5432:5432"
+      - "27017:27017"
     environment:
-      - POSTGRES_DB=shashlik
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express:latest
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+#      ME_CONFIG_MONGODB_URL: mongodb://<user>:<password>@<mongo-container-name>:<container-port>/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+
       
       
 

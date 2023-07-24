@@ -1,6 +1,4 @@
 asyncpg
-# SQLAlchemy
-# alembic
 pymongo
 mongoengine
 python-dotenv
@@ -12,4 +10,6 @@ python-jose
 passlib
 python-multipart
 motor
+jinja2
+
 

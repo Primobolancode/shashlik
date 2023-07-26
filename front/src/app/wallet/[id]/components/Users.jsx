@@ -1,5 +1,6 @@
 import {Icon} from "@iconify/react";
 import {useState} from "react";
+import domain from "config";
 
 export default function Users({wallet, setLoading, fetchData}) {
     const id = wallet._id
@@ -10,7 +11,7 @@ export default function Users({wallet, setLoading, fetchData}) {
             headers: {'Content-Type': 'application/json'},
         };
         try {
-            const response = await fetch(`http://api.paywal.ru/api/v1/event/${id}/user/${user_id}`, requestOptions)
+            const response = await fetch(`http://${domain}/api/v1/event/${id}/user/${user_id}`, requestOptions)
             const data = await response.json();
             await fetchData()
 
@@ -28,7 +29,7 @@ export default function Users({wallet, setLoading, fetchData}) {
             body: JSON.stringify({name: `${newUserName}`})
         };
         try {
-            const response = await fetch(`http://api.paywal.ru/api/v1/event/${id}/user`, requestOptions)
+            const response = await fetch(`http://${domain}/api/v1/event/${id}/user`, requestOptions)
             const data = await response.json();
             await fetchData()
         } catch (error) {

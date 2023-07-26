@@ -1,5 +1,6 @@
 import {Icon} from "@iconify/react";
 import {useEffect, useState} from "react";
+import domain from "config";
 
 export default function Expenses({wallet, setLoading, fetchData}) {
     const id = wallet._id
@@ -15,7 +16,7 @@ export default function Expenses({wallet, setLoading, fetchData}) {
             headers: {'Content-Type': 'application/json'},
         };
         try {
-            const response = await fetch(`http://api.paywal.ru/api/v1/event/${id}/expense/${expense_id}`, requestOptions)
+            const response = await fetch(`http://${domain}/api/v1/event/${id}/expense/${expense_id}`, requestOptions)
             const data = await response.json();
             await fetchData()
 
@@ -40,7 +41,7 @@ export default function Expenses({wallet, setLoading, fetchData}) {
             )
         };
         try {
-            const response = await fetch(`http://api.paywal.ru/api/v1/event/${id}/expense`, requestOptions)
+            const response = await fetch(`http://${domain}/api/v1/event/${id}/expense`, requestOptions)
             const data = await response.json();
             await fetchData()
             setCreditor('')

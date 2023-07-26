@@ -5,6 +5,8 @@ import Header from "@/app/wallet/[id]/components/Header";
 import Users from "@/app/wallet/[id]/components/Users";
 import Expenses from "@/app/wallet/[id]/components/Expenses";
 import Debts from "@/app/wallet/[id]/components/Debts";
+import AddNewExpense from "@/app/wallet/[id]/components/AddNewExpense";
+import domain from "config";
 
 export default function Wallet({params}) {
     const {id} = params;
@@ -81,7 +83,7 @@ export default function Wallet({params}) {
     const fetchData = async () => {
         setLoading(true)
         try {
-            const response = await fetch(`http://api.paywal.ru/api/v1/event/${id}`);
+            const response = await fetch(`http://${domain}/api/v1/event/${id}`);
             const data = await response.json();
             setWallet(data);
             setLoading(false);
@@ -114,6 +116,7 @@ export default function Wallet({params}) {
                     <Users wallet={wallet} setLoading={setLoading} fetchData={fetchData}/>
                     <Expenses wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
                     <Debts wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
+                    <AddNewExpense/>
                 </div>
             </div>
         </div>

@@ -2,10 +2,11 @@
 
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
+import domain from 'config.js'
 
 
 export default function CreateWallet(params, searchParams) {
-  const router = useRouter(); // Получаем объект 'router' с помощью хука 'useRouter' из Next.js
+    const router = useRouter(); // Получаем объект 'router' с помощью хука 'useRouter' из Next.js
     const [wallet, setWallet] = useState(null);
     const [walletName, setWalletName] = useState('')
 
@@ -17,7 +18,7 @@ export default function CreateWallet(params, searchParams) {
             body: JSON.stringify({title: `${walletName}`})
         };
         try {
-            const response = await fetch('http://api.paywal.ru/api/v1/event/new', requestOptions)
+            const response = await fetch(`http://${domain}/api/v1/event/new`, requestOptions)
             const data = await response.json();
             setWallet(data.result)
         } catch (error) {

@@ -1,5 +1,5 @@
 import {Icon} from "@iconify/react";
-
+import domain from "config";
 export default function Debts({wallet, setLoading, fetchData}) {
     const id = wallet._id
 
@@ -9,7 +9,7 @@ export default function Debts({wallet, setLoading, fetchData}) {
             headers: {'Content-Type': 'application/json'},
         };
         try {
-            const response = await fetch(`http://api.paywal.ru/api/v1/event/${id}/debt/${debt_id}/repaid`, requestOptions)
+            const response = await fetch(`http://${domain}/api/v1/event/${id}/debt/${debt_id}/repaid`, requestOptions)
             const data = await response.json();
             await fetchData()
 
@@ -24,7 +24,7 @@ export default function Debts({wallet, setLoading, fetchData}) {
             headers: {'Content-Type': 'application/json'},
         };
         try {
-            const response = await fetch(`http://api.paywal.ru/api/v1/event/${id}/debt/${debt_id}/unrepaid`, requestOptions)
+            const response = await fetch(`http://${domain}/api/v1/event/${id}/debt/${debt_id}/unrepaid`, requestOptions)
             const data = await response.json();
             await fetchData()
 

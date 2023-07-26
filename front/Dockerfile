@@ -17,4 +17,4 @@ COPY . .
 RUN npm run build
 
 # Запускаем сервер Next.js
-#CMD ["npm", "start"]
+CMD ["npm", "run", "start"]

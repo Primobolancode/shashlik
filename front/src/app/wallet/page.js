@@ -17,7 +17,7 @@ export default function CreateWallet(params, searchParams) {
             body: JSON.stringify({title: `${walletName}`})
         };
         try {
-            const response = await fetch('http://api.localhost/api/v1/event/new', requestOptions)
+            const response = await fetch('http://api.paywal.ru/api/v1/event/new', requestOptions)
             const data = await response.json();
             setWallet(data.result)
         } catch (error) {

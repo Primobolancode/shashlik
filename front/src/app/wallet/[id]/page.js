@@ -81,7 +81,7 @@ export default function Wallet({params}) {
     const fetchData = async () => {
         setLoading(true)
         try {
-            const response = await fetch(`http://api.localhost/api/v1/event/${id}`);
+            const response = await fetch(`http://api.paywal.ru/api/v1/event/${id}`);
             const data = await response.json();
             setWallet(data);
             setLoading(false);

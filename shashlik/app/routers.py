@@ -1,9 +1,12 @@
 from bson import ObjectId
 from fastapi import APIRouter, Depends
+from starlette.requests import Request
+from starlette.responses import HTMLResponse
 
 import app.db as database
 import app.schemas as schemas
 import app.utils as utils
+
 api_router = APIRouter(prefix="/api/v1")
 
 page_router = APIRouter(prefix="")
@@ -28,6 +31,54 @@ async def delete_event(event_id, db=Depends(database.init_db)):
     )
     return
 
+
+@api_router.get("/event/{event_id}", tags=['event'])
+async def get_event_data(event_id, db=Depends(database.init_db)):
+    collection = db.event
+    result = await collection.find_one(
+        {"_id": ObjectId(event_id)}
+    )
+    result['_id'] = str(result['_id'])
+    result['users'] = [schemas.UserOutput(name=user['name'], id=str(user['_id'])) for user in result['users']]
+    users = result['users']
+    result['expenses'] = [
+        schemas.ExpenseOutput(
+            id=str(expense["_id"]),
+            title=expense["title"],
+            creditor=schemas.UserOutput(
+                id=str(expense["creditor"]),
+                name=[user.name for user in users if str(user.id) == str(expense["creditor"])][0]
+            ),
+            debtors=[
+                schemas.UserOutput(
+                    id=str(debtor),
+                    name=[user.name for user in result['users'] if str(user.id) == str(debtor)][0]
+                ) for debtor in expense['debtors']
+            ],
+            summ=expense["summ"],
+
+        )
+        for expense in result['expenses']
+    ]
+    result['debts'] = [
+        schemas.DebtOutput(
+            id=str(debt["_id"]),
+            repaid=debt['repaid'],
+            creditor=schemas.UserOutput(
+                id=str(debt["creditor"]),
+                name=[user.name for user in users if str(user.id) == str(debt["creditor"])][0]
+            ),
+            debtor=schemas.UserOutput(
+                id=str(debt["debtor"]),
+                name=[user.name for user in users if str(user.id) == str(debt["debtor"])][0]
+            ),
+            summ=debt["summ"],
+        )
+        for debt in result['debts']
+    ]
+    return result
+
+
 @api_router.get("/event/{event_id}/users", tags=['user'])
 async def get_users_from_event(event_id, db=Depends(database.init_db)):
     collection = db.event
@@ -39,6 +90,7 @@ async def get_users_from_event(event_id, db=Depends(database.init_db)):
     result = [schemas.UserOutput(name=user['name'], id=str(user['_id'])) for user in result['users']]
     return {"users": result}
 
+
 @api_router.post('/event/{event_id}/user', tags=['user'])
 async def add_user_to_event(event_id: str, new_user: schemas.CreateUser, db=Depends(database.init_db)):
     c = db.event
@@ -48,6 +100,7 @@ async def add_user_to_event(event_id: str, new_user: schemas.CreateUser, db=Depe
     )
     return 'ok'
 
+
 @api_router.delete("/event/{event_id}/user/{user_id}", tags=['user'])
 async def remove_user_from_event(event_id: str, user_id, db=Depends(database.init_db)):
     c = db.event
@@ -56,6 +109,7 @@ async def remove_user_from_event(event_id: str, user_id, db=Depends(database.ini
         {"$pull": {"users": {"_id": ObjectId(user_id)}}}
     )
     return 'ok'
+
 
 @api_router.post("/event/{event_id}/expense", tags=['expense'])
 async def add_expense(event_id, expense: schemas.CreateExpense, db=Depends(database.init_db)):
@@ -146,11 +200,8 @@ async def get_expenses(event_id, db=Depends(database.init_db), event=Depends(dat
 
 
 @api_router.get("/event/{event_id}/debts", tags=['debts'])
-async def get_debts(
-        event_id,
-        db=Depends(database.init_db),
-        event=Depends(database.get_current_event)
-):
+async def get_debts(event_id, db=Depends(database.init_db), event=Depends(database.get_current_event)
+                    ):
     users = event['users']
     result = [
         schemas.DebtOutput(
@@ -170,6 +221,7 @@ async def get_debts(
     ]
     return result
 
+
 @api_router.post("/event/{event_id}/debt/{debt_id}/repaid", tags=['debts'])
 async def repaid_debt(event_id, debt_id, db=Depends(database.init_db)):
     collection = db.event
@@ -180,6 +232,7 @@ async def repaid_debt(event_id, debt_id, db=Depends(database.init_db)):
     await utils.optimize_debts(event_id, collection)
     return 'ok'
 
+
 @api_router.post("/event/{event_id}/debt/{debt_id}/unrepaid", tags=['debts'])
 async def unrepaid_debt(event_id, debt_id, db=Depends(database.init_db)):
     collection = db.event
@@ -189,3 +242,43 @@ async def unrepaid_debt(event_id, debt_id, db=Depends(database.init_db)):
     )
     await utils.optimize_debts(event_id, collection)
     return 'ok'
+
+
+@page_router.get('/{wallet_id}', response_class=HTMLResponse)
+async def index(request: Request, wallet_id, user_id, db=Depends(database.init_db)):
+    collection = db.event
+    event = await collection.find_one(
+        {"_id": ObjectId(wallet_id)}
+    )
+    users = event['users']
+    expenses = [
+        schemas.ExpenseOutput(
+            id=str(expense["_id"]),
+            title=expense["title"],
+            creditor=schemas.UserOutput(
+                id=str(expense["creditor"]),
+                name=[user["name"] for user in users if str(user["_id"]) == str(expense["creditor"])][0]
+            ),
+            debtors=[
+                schemas.UserOutput(
+                    id=str(debtor),
+                    name=[user["name"] for user in users if str(user["_id"]) == str(debtor)][0]
+                ) for debtor in expense['debtors']
+            ],
+            summ=expense["summ"],
+
+        )
+        for expense in event['expenses']
+    ]
+    total_summ = sum(expense['summ'] for expense in event['expenses'])
+
+    from app.main import templates
+    return templates.TemplateResponse("wallet_id.html", {
+        "request": request,
+        "title": event['title'],
+        "body_content": "This is the demo for using FastAPI with Jinja templates",
+        "your_debt": 777,
+        "expenses": expenses,
+        "total_summ": total_summ,
+
+    })

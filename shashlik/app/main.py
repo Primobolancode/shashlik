@@ -2,6 +2,8 @@ from bson import ObjectId
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.templating import Jinja2Templates
+
 from app.db import init_db, get_current_event
 from app.utils import generate_debts, optimize_debts
 from app.routers import api_router, page_router
@@ -21,6 +23,7 @@ app.include_router(api_router)
 app.include_router(page_router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 """
 1. Создать event + 

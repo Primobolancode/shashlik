@@ -1,3 +1,6 @@
+docker compose -f prod.docker-compose.yaml up
+
+
 ## Pre-requisites
 
 Before getting started, please ensure that you have the following dependencies installed on your system:

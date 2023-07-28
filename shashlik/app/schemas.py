@@ -47,6 +47,7 @@ class CreateExpense(BaseModel):
     creditor_id: str
     debtors_id: List['str']
     summ: float
+    datetime: datetime.datetime | None
 
 class ExpenseOutput(BaseModel):
     id: str
@@ -54,6 +55,7 @@ class ExpenseOutput(BaseModel):
     creditor: UserOutput
     debtors: List[UserOutput]
     summ: float
+    datetime: datetime.datetime | None
 
 class DebtToSave(BaseModel):
     creditor: str

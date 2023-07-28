@@ -8,6 +8,9 @@ import Debts from "@/app/wallet/[id]/components/Debts";
 
 import domain from "config";
 import Datepicker from "react-tailwindcss-datepicker";
+import TotalPriceStat from "@/app/wallet/[id]/components/TotalPriceStat";
+import AddNewExpenseButton from "@/app/wallet/[id]/components/AddNewExpenseButton";
+import LastExpenses from "@/app/wallet/[id]/components/LastExpenses";
 
 export default function Wallet({params}) {
     const {id} = params;
@@ -15,191 +18,66 @@ export default function Wallet({params}) {
     const [loading, setLoading] = useState(true);
 
 
-    const [freeMethod, setFreeMethod] = useState('equal')
-    const [shareMethod, setShareMethod] = useState('percent')
-    const [shareIcon, setShareIcon] = useState('material-symbols:percent')
-    const [expenseSum, setExpenseSum] = useState(0)
-    const [debtors, setDebtors] = useState([])
-    const [eachShare, setEachShare] = useState(0)
-    const [eachPercent, setEachPercent] = useState([]);
-    const [valueError, setValueError] = useState('')
+    // const [expenseSum, setExpenseSum] = useState(parseFloat(0.0))
+
+    // const [eachShare, setEachShare] = useState(0)
+    // const [eachPercent, setEachPercent] = useState([]);
+    // const [valueError, setValueError] = useState('')
 
 
     // useEffect(() => {
-    //         console.log(eachPercent);
+    //     if (debtors?.length > 0) {
+    //         setEachShare(
+    //             parseFloat(expenseSum / debtors?.length)
+    //         )
+    //     } else setEachShare(0);
+    // }, [debtors]);
+
+
+    // useEffect(() => {
+    //     const initalPercent = wallet?.users.reduce((acc, user) => {
     //         if (shareMethod === 'percent') {
-    //             try {
-    //                 const sum = Object.values(eachPercent).reduce((acc, curr) => acc + curr, 0);
-    //                 console.log(sum);
-    //                 if (sum === 100) {
-    //                     console.log(sum, 100, typeof(sum), typeof(100))
-    //                     setValueError('Должно быть 100%')
-    //                 }
-    //             } catch (error) {
-    //
-    //             }
+    //             acc[user.id] = 100 / (wallet.users).length;
+    //             return acc;
     //         }
     //         if (shareMethod === 'sigma') {
+    //             acc[user.id] = parseFloat(expenseSum / (wallet.users).length);
+    //             return acc;
+    //         }
+    //         if (shareMethod === 'divider') {
+    //             acc[user.id] = 1;
+    //             return acc
+    //         }
+    //     }, {});
+    //     setEachPercent(initalPercent)
+    // }, [shareMethod]);
+
+
+    // useEffect(() => {
+    //     if (shareMethod === 'percent') {
+    //         setShareIcon("material-symbols:percent")
+    //     }
+    //     if (shareMethod === 'sigma') {
+    //         setShareIcon("mdi:sigma")
+    //     }
+    //     if (shareMethod === "divider") {
+    //         setShareIcon("mdi:division")
+    //     }
+    // }, [shareMethod]);
+    // const eachValue = (user_id) => {
+    //     try {
+    //         if (shareMethod === 'percent') {
+    //             const result = parseFloat(Object?.entries(eachPercent).filter(([key, value]) => key === user_id)[0][1]).toFixed(2) * expenseSum / 100
+    //             if (result) {
+    //                 return `~ ${result.toFixed(2)}`
+    //             }
     //
     //         }
-    //     }, [eachPercent, shareMethod]);
-
-    useEffect(() => {
-        console.log(shareMethod)
-
-        try {
-            const sum = Object.values(eachPercent).reduce((acc, curr) => acc + curr, 0);
-            if (shareMethod === 'percent') {
-                if (sum !== 100) {
-                    setValueError('!= 100%');
-
-                }
-            } else if (shareMethod === 'sigma') {
-                if (sum !== parseInt(expenseSum)) {
-                    console.log(sum, expenseSum)
-                    setValueError('!= expenseSum');
-                }
-            } else if (shareMethod === 'divider') {
-                setValueError('');
-            } else {
-                setValueError('');
-            }
-
-        } catch (error) {
-
-        }
-
-        //     } else if (shareMethod === 'sigma') {
-        //         console.log(sum)
-        //         console.log(parseInt(expenseSum), sum)
-        //
-        //
-        //         if (parseInt(sum) !== parseInt(expenseSum)) {
-        //             setValueError(`${expenseSum}`)
-        //         }
-        //     } else {
-        //         setValueError('')
-        //     }
-        // } catch (error) {
-        //     console.log(error)
-        // }
-    }, [expenseSum, shareMethod, eachPercent])
-
-
-    useEffect(() => {
-        setDebtors(wallet?.users.map((user) => user.id))
-        const initalPercent = wallet?.users.reduce((acc, user) => {
-            acc[user.id] = 100 / (wallet.users).length;
-            return acc;
-        }, {});
-        setEachPercent(initalPercent)
-    }, [wallet]);
-
-    const handleEachPercent = (event, userId,) => {
-        // console.log(event.target.value)
-        // const userId = user.id; // получаем идентификатор пользователя
-        // const newValue = event.target.value; // получаем новое значение из элемента управления
-        //
-        // // Создаем новый объект, копируя предыдущее состояние eachPercent
-        const updatedEachPercent = {...eachPercent};
-        //
-        // // Обновляем значение для определенного пользователя
-        updatedEachPercent[userId] = parseInt(event.target.value);
-        //
-        // // Обновляем состояние eachPercent с помощью нового объекта
-        setEachPercent(updatedEachPercent);
-    };
-
-
-    useEffect(() => {
-
-        if (debtors.length > 0) {
-            setEachShare(
-                parseInt(expenseSum / debtors?.length)
-            )
-        } else setEachShare(0)
-
-        const initalPercent = wallet?.users.reduce((acc, user) => {
-            if (shareMethod === 'percent') {
-                acc[user.id] = 100 / (wallet.users).length;
-                return acc;
-            }
-            if (shareMethod === 'sigma') {
-                acc[user.id] = expenseSum / (wallet.users).length;
-                return acc;
-            }
-            if (shareMethod === 'divider') {
-                acc[user.id] = 1;
-                return acc
-            }
-        }, {});
-        setEachPercent(initalPercent)
-    }, [expenseSum])
-
-
-// useEffect(() => {
-//     setDebtors([])
-// }, [debtors]);
-
-
-    useEffect(() => {
-        // console.log(debtors)
-    }, [debtors]);
-
-
-    const handleDebtors = useCallback((event) => {
-        const userId = event.target.value;
-
-
-        setDebtors((prevDebtors) => {
-            if (event.target.checked) {
-                return [...prevDebtors, userId];
-            } else {
-                return prevDebtors.filter((id) => id !== userId);
-            }
-        });
-
-
-    }, []);
-
-    useEffect(() => {
-        if (debtors?.length > 0) {
-            setEachShare(
-                expenseSum / debtors?.length
-            )
-        } else setEachShare(0);
-    }, [debtors]);
-
-
-    useEffect(() => {
-        if (shareMethod === 'percent') {
-            setShareIcon("material-symbols:percent")
-        }
-        if (shareMethod === 'sigma') {
-            setShareIcon("mdi:sigma")
-        }
-        if (shareMethod === "divider") {
-            setShareIcon("mdi:division")
-        }
-    }, [shareMethod]);
-
-    useEffect(() => {
-        const initalPercent = wallet?.users.reduce((acc, user) => {
-            if (shareMethod === 'percent') {
-                acc[user.id] = 100 / (wallet.users).length;
-                return acc;
-            }
-            if (shareMethod === 'sigma') {
-                acc[user.id] = expenseSum / (wallet.users).length;
-                return acc;
-            }
-            if (shareMethod === 'divider') {
-                acc[user.id] = 1;
-                return acc
-            }
-        }, {});
-        setEachPercent(initalPercent)
-    }, [shareMethod]);
+    //     } catch (error) {
+    //         return 0
+    //     }
+    //
+    // }
 
 // const initalPercent = wallet?.users.reduce((acc, user) => {
 //     if (shareMethod === 'percent') {
@@ -247,15 +125,11 @@ export default function Wallet({params}) {
         }
     };
 
-// useEffect(() => {
-//     console.log(freeMethod);
-// }, [freeMethod]);
 
-
-    const handleShareMethod = (value) => {
-        if (value === shareMethod) {
-        } else setShareMethod(value)
-    }
+    // const handleShareMethod = (value) => {
+    //     if (value === shareMethod) {
+    //     } else setShareMethod(value)
+    // }
 
 
     const [date, setDate] = useState({
@@ -265,7 +139,6 @@ export default function Wallet({params}) {
 
 
     const handleDateChange = (newValue) => {
-        // console.log("newValue:", newValue);
         setDate(newValue);
     }
 
@@ -277,9 +150,7 @@ export default function Wallet({params}) {
             const data = await response.json();
             setWallet(data);
             setLoading(false);
-            // console.log(data)
         } catch (error) {
-            // console.error("Error fetching data:", error);
             setLoading(false);
         }
     };
@@ -291,6 +162,28 @@ export default function Wallet({params}) {
             setLoading(false);
         }
     }, [id]);
+
+    // useEffect(() => {
+    //     try {
+    //         const sum = Object.values(eachPercent).reduce((acc, curr) => acc + curr, 0);
+    //         console.log('here ')
+    //         if (shareMethod === 'percent' && sum !== 100) {
+    //             console.log('error by percent', sum + '< 100');
+    //             setValueError('error by percent', sum + '< 100');
+    //         } else {
+    //             setValueError('')
+    //
+    //         }
+    //         // } else if (shareMethod === 'sigma' && sum !== expenseSum) {
+    //         //     console.log('error by sigma', sum + ` !== ${expenseSum}`);
+    //         // } else {
+    //         //     console.log('OK')
+    //         // }
+    //         // console.log(shareMethod, expenseSum, sum)
+    //     } catch (error) {
+    //         // console.log(error)
+    //     }
+    // }, [shareMethod, eachPercent, expenseSum])
 
 
     if (loading) {
@@ -308,234 +201,142 @@ export default function Wallet({params}) {
         <>
             <Header wallet={wallet} fetchData={fetchData}/>
 
+            <div></div>
 
-            <button className="btn" onClick={() => window.my_modal_1.showModal()}>open modal</button>
-            <dialog id="my_modal_1" className="modal">
-                <form method="dialog" className="modal-box">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 flex m-2 md:hidden">
+                <AddNewExpenseButton wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
+                <TotalPriceStat wallet={wallet}/>
+                <LastExpenses wallet={wallet}/>
+                <Debts wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
 
-                    <h3 className="font-bold text-lg pb-2">Добавление расхода</h3>
-
-                    <label className="label">
-                        <span className="label-text-alt">Название</span>
-
-                        {/*<span className="label-text-alt">Bottom Right label</span>*/}
-                    </label>
-                    <input type="text" placeholder="билеты в кино, например"
-                           className="input input-bordered w-full max-w p-2"/>
-
-
-                    <label className="label">
-                        <span className="label-text-alt">Дата</span>
-
-                    </label>
-                    <Datepicker
-                        inputClassName="input input-bordered w-full max-w"
-                        startWeekOn="mon"
-                        i18n={"ru"}
-                        value={date}
-                        onChange={handleDateChange}
-                        asSingle={true}
-                        popoverDirection="down"
-                        useRange={false}
-                        primaryColor={"fuchsia"}
-                        showFooter={true}
-
-                    />
+                {/*<p className="text-xl">Последние расходы</p>*/}
+                {/*<div className="h-32 carousel carousel-vertical rounded-box rounded-xl">*/}
+                {/*    <div className="carousel-item h-full">*/}
+                {/*        <div className="bg-danger h-full border border-b-indigo-100 w-full">*/}
+                {/*            123*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*    <div className="carousel-item h-full">*/}
+                {/*        <div className="bg-danger h-full border border-b-indigo-100 w-full">*/}
+                {/*            <div>123</div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
 
-                    <label className="label">
-                        <span className="label-text-alt">Кто платит?</span>
-                    </label>
-                    <select className="select select-bordered w-full max-w p-2">
-                        <option disabled defaultValue>Кто платит?</option>
-                        {wallet.users.map((user) => (
-                            // eslint-disable-next-line react/jsx-key
-                            <option key={user.id} value={user.id}>{user.name}</option>
-                        ))}
+                {/*<div className="overflow-x-auto">*/}
+                {/*    <table className="table table-xl">*/}
+                {/*        <thead>*/}
+                {/*        <tr>*/}
+                {/*            <th>Имя</th>*/}
+                {/*        </tr>*/}
+                {/*        </thead>*/}
+                {/*        <tbody>*/}
+                {/*        {wallet.users.map((user) => (*/}
+                {/*            <tr>*/}
+                {/*                <th>{user.name}</th>*/}
+                {/*            </tr>*/}
+                {/*        ))}*/}
+
+                {/*        </tbody>*/}
+                {/*    </table>*/}
+                {/*</div>*/}
 
 
-                    </select>
-
-
-                    {/*<div className="join">*/}
-                    <label className="label">
-                        <span className="label-text-alt">Сумма</span>
-                    </label>
-                    <input type="number" placeholder="сумма" onChange={event => setExpenseSum(event.target.value)}
-                           className="input join-item input-bordered w-full max-w p-2 mb-2"/>
-
-
-                    {/*<label className="label">*/}
-                    {/*<span className="label-text-alt">Bottom Left label</span>*/}
-                    {/*<span className="label-text-alt">Bottom Right label</span>*/}
-                    {/*</label>*/}
-                    {/*<button className="btn rounded-r-full join-item btn-disabled"><span className="text-xl">$</span>*/}
-                    {/*</button>*/}
-                    {/*</div>*/}
-                    <label className="label cursor-pointer p-2 justify-center text-xl">
-                        <span
-                            className={`label-text flex text-sm pr-2 text-xl ${freeMethod === "equal" ? "text-primary" : ""}`}>поровну</span>
-                        <input type="checkbox" id="method" onChange={handleSetFreeMethod} className="toggle toggle-lg"/>
-                        <span
-                            className={`label-text flex text-sm pl-2 text-xl ${freeMethod === "free" ? "text-primary" : ""}`}>произвольно</span>
-                    </label>
-
-
-                    {freeMethod === "equal"
-                        ?
-                        <>
-                            <div>между</div>
-                            <div className={"flex"}>
-                                {wallet.users.map((user) => (
-                                    // eslint-disable-next-line react/jsx-key
-                                    <React.Fragment key={user.id}>
-                                        <label className={"label"}>
-                                            <input type="checkbox"
-                                                   key={user.id}
-                                                   disabled={!expenseSum > 0}
-                                                   className="toggle toggle mr-2"
-                                                   defaultChecked={true}
-                                                   name={user.name}
-                                                   value={user.id}
-                                                   onChange={handleDebtors}
-                                            />
-                                            <span className={`"flex"`}>{user.name}</span>
-                                        </label>
-                                    </React.Fragment>
-                                ))}
-                            </div>
-                            {eachShare > 0 ? <div className="badge badge-lg p-5 mt-4">
-                                {debtors.length > 1 ? "по " : ""}
-                                {eachShare}</div> : <></>}
-                        </>
-                        :
-                        <>
-                            <div className="join flex mt-2 pb-10 gap-3">
-                                <input className="btn btn-outline" type="radio" name="options"
-                                       onChange={() => handleShareMethod('percent')} defaultChecked={true}
-                                       aria-label="%"/>
-                                <input className="btn btn-outline" type="radio" name="options"
-                                       onChange={() => handleShareMethod('sigma')} aria-label="Σ"/>
-                                <input className="btn btn-outline" type="radio" name="options"
-                                       onChange={() => handleShareMethod('divider')} aria-label="÷"/>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-8">
-
-                                {wallet.users.map((user) => (
-                                    // eslint-disable-next-line react/jsx-key
-                                    <div className="relative" key={user.id}>
-                                        <span className="label-text-alt">{user.name}</span>
-
-                                        <input type="number"
-                                            // defaultValue={Object.entries(eachPercent).filter(([key, value]) => key === user.id)[0][1]}
-                                               onChange={event => handleEachPercent(event, user.id)}
-                                               value={Object?.entries(eachPercent).filter(([key, value]) => key === user.id)[0][1]}
-                                               className="px-4 py-2 border rounded-lg pl-10 input input-bordered w-full"/>
-                                        <div
-                                            className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <Icon icon={shareIcon}
-                                                  style={{fontSize: '20px', position: 'absolute'}}/>
-                                        </div>
-                                    </div>
-                                ))}
-
-                            </div>
-
-                            <div className="text-red-400">{valueError}</div>
-
-                        </>
-                    }
-
-
-                    {/*<p className="py-4">Press ESC key or click the button below to close</p>*/}
-                    <div className="modal-action">
-                        {/* if there is a button in form, it will close the modal */}
-                        <button className="btn btn-primary">Добавить</button>
-                        <button className="btn">Отмена</button>
-
-                    </div>
-
-
-                </form>
-                <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
-                </form>
-            </dialog>
-
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 flex m-2">
-                <div>
-                    <div className="card bg-neutral text-neutral-content">
-                        <div className="card-body items-center text-center">
-                            <h2 className="card-title">Cookies!</h2>
-                            <p>We are using cookies for no reason.</p>
-                            <div className="card-actions justify-end">
-                                <button className="btn btn-primary">Accept</button>
-                                <button className="btn btn-ghost">Deny</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div className="card bg-neutral text-neutral-content">
-                        <div className="card-body items-center text-center">
-                            <h2 className="card-title">Cookies!</h2>
-                            <p>We are using cookies for no reason.</p>
-                            <div className="card-actions justify-end">
-                                <button className="btn btn-primary">Accept</button>
-                                <button className="btn btn-ghost">Deny</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div className="card bg-neutral text-neutral-content">
-                        <div className="card-body items-center text-center">
-                            <h2 className="card-title">Cookies!</h2>
-                            <p>We are using cookies for no reason.</p>
-                            <div className="card-actions justify-end">
-                                <button className="btn btn-primary">Accept</button>
-                                <button className="btn btn-ghost">Deny</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div className="card bg-neutral text-neutral-content">
-                        <div className="card-body items-center text-center">
-                            <h2 className="card-title">Cookies!</h2>
-                            <p>We are using cookies for no reason.</p>
-                            <div className="card-actions justify-end">
-                                <button className="btn btn-primary">Accept</button>
-                                <button className="btn btn-ghost">Deny</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div className="card bg-neutral text-neutral-content">
-                        <div className="card-body items-center text-center">
-                            <h2 className="card-title">Cookies!</h2>
-                            <p>We are using cookies for no reason.</p>
-                            <div className="card-actions justify-end">
-                                <button className="btn btn-primary">Accept</button>
-                                <button className="btn btn-ghost">Deny</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div className="card bg-neutral text-neutral-content">
-                        <div className="card-body items-center text-center">
-                            <h2 className="card-title">Cookies!</h2>
-                            <p>We are using cookies for no reason.</p>
-                            <div className="card-actions justify-end">
-                                <button className="btn btn-primary">Accept</button>
-                                <button className="btn btn-ghost">Deny</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {/*    <div>*/}
+                {/*        <div className="card bg-neutral text-neutral-content">*/}
+                {/*            <div className="card-body items-center text-center">*/}
+                {/*                <h2 className="card-title">Cookies!</h2>*/}
+                {/*                <p>We are using cookies for no reason.</p>*/}
+                {/*                <div className="card-actions justify-end">*/}
+                {/*                    <button className="btn btn-primary">Accept</button>*/}
+                {/*                    <button className="btn btn-ghost">Deny</button>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*    <div>*/}
+                {/*        <div className="card bg-neutral text-neutral-content">*/}
+                {/*            <div className="card-body items-center text-center">*/}
+                {/*                <h2 className="card-title">Cookies!</h2>*/}
+                {/*                <p>We are using cookies for no reason.</p>*/}
+                {/*                <div className="card-actions justify-end">*/}
+                {/*                    <button className="btn btn-primary">Accept</button>*/}
+                {/*                    <button className="btn btn-ghost">Deny</button>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*    <div>*/}
+                {/*        <div className="card bg-neutral text-neutral-content">*/}
+                {/*            <div className="card-body items-center text-center">*/}
+                {/*                <h2 className="card-title">Cookies!</h2>*/}
+                {/*                <p>We are using cookies for no reason.</p>*/}
+                {/*                <div className="card-actions justify-end">*/}
+                {/*                    <button className="btn btn-primary">Accept</button>*/}
+                {/*                    <button className="btn btn-ghost">Deny</button>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*    <div>*/}
+                {/*        <div className="card bg-neutral text-neutral-content">*/}
+                {/*            <div className="card-body items-center text-center">*/}
+                {/*                <h2 className="card-title">Cookies!</h2>*/}
+                {/*                <p>We are using cookies for no reason.</p>*/}
+                {/*                <div className="card-actions justify-end">*/}
+                {/*                    <button className="btn btn-primary">Accept</button>*/}
+                {/*                    <button className="btn btn-ghost">Deny</button>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*    <div>*/}
+                {/*        <div className="card bg-neutral text-neutral-content">*/}
+                {/*            <div className="card-body items-center text-center">*/}
+                {/*                <h2 className="card-title">Cookies!</h2>*/}
+                {/*                <p>We are using cookies for no reason.</p>*/}
+                {/*                <div className="card-actions justify-end">*/}
+                {/*                    <button className="btn btn-primary">Accept</button>*/}
+                {/*                    <button className="btn btn-ghost">Deny</button>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*    <div>*/}
+                {/*        <div className="card bg-neutral text-neutral-content">*/}
+                {/*            <div className="card-body items-center text-center">*/}
+                {/*                <h2 className="card-title">Cookies!</h2>*/}
+                {/*                <p>We are using cookies for no reason.</p>*/}
+                {/*                <div className="card-actions justify-end">*/}
+                {/*                    <button className="btn btn-primary">Accept</button>*/}
+                {/*                    <button className="btn btn-ghost">Deny</button>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+            </div>
+            <div className="btm-nav md:hidden">
+                <button className={"active"}>
+                    <Icon icon={"material-symbols:home-outline-rounded"} className={"text-2xl"}></Icon>
+                    <span className="btm-nav-label">Home</span>
+                </button>
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span className="btm-nav-label">Warnings</span>
+                </button>
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    <span className="btm-nav-label">Statics</span>
+                </button>
             </div>
 
 

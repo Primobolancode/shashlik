@@ -34,9 +34,15 @@ export default function Header({wallet, fetchData}){
                               style={{fontSize: '20px'}}/>
                                 </div>
                     </button>
+                    <button className="btn btn-ghost btn-circle"
+                            onClick={() => fetchData()}
+                    >
+                    <Icon icon="material-symbols:refresh" style={{fontSize: '20px'}}/>
+                    </button>
                     <button className="btn btn-ghost btn-circle">
                     <Icon icon="material-symbols:settings" style={{fontSize: '20px'}}/>
                     </button>
+
                 </div>
             </div>
                 //         <div className="w-full m-auto flex border rounded-xl border-cyan-500 items-center p-2 justify-between">

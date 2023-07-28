@@ -38,6 +38,7 @@ async def get_event_data(event_id, db=Depends(database.init_db)):
     result = await collection.find_one(
         {"_id": ObjectId(event_id)}
     )
+    print(result)
     result['_id'] = str(result['_id'])
     result['users'] = [schemas.UserOutput(name=user['name'], id=str(user['_id'])) for user in result['users']]
     users = result['users']
@@ -45,9 +46,10 @@ async def get_event_data(event_id, db=Depends(database.init_db)):
         schemas.ExpenseOutput(
             id=str(expense["_id"]),
             title=expense["title"],
+            datetime=expense['datetime'],
             creditor=schemas.UserOutput(
                 id=str(expense["creditor"]),
-                name=[user.name for user in users if str(user.id) == str(expense["creditor"])][0]
+                name=[user.name for user in users if str(user.id) == str(expense["creditor"])][0],
             ),
             debtors=[
                 schemas.UserOutput(
@@ -76,6 +78,7 @@ async def get_event_data(event_id, db=Depends(database.init_db)):
         )
         for debt in result['debts']
     ]
+    result['total_price'] = sum([i.summ for i in result['expenses']])
     return result
 
 
@@ -112,7 +115,8 @@ async def remove_user_from_event(event_id: str, user_id, db=Depends(database.ini
 
 
 @api_router.post("/event/{event_id}/expense", tags=['expense'])
-async def add_expense(event_id, expense: schemas.CreateExpense, db=Depends(database.init_db)):
+async def add_expense(request: Request, event_id, expense: schemas.CreateExpense, db=Depends(database.init_db)):
+
     collection = db.event
     await collection.update_one(
         {"_id": ObjectId(event_id)},
@@ -122,6 +126,7 @@ async def add_expense(event_id, expense: schemas.CreateExpense, db=Depends(datab
             "creditor": ObjectId(expense.creditor_id),
             "debtors": [ObjectId(i) for i in expense.debtors_id],
             "summ": expense.summ,
+            "datetime": expense.datetime,
         }}}
     )
     debts = utils.generate_debts(expense.creditor_id, expense.debtors_id, expense.summ)

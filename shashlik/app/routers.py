@@ -114,6 +114,18 @@ async def remove_user_from_event(event_id: str, user_id, db=Depends(database.ini
     return 'ok'
 
 
+@api_router.patch("/event/{event_id}/user/{user_id}/{new_name}", tags=["user"])
+async def rename_user_from_event(event_id: str, user_id, new_name, db=Depends(database.init_db)):
+    c = db.event
+    update_result = await c.update_one(
+        {"_id": ObjectId(event_id), "users._id": ObjectId(user_id)},
+        {"$set": {"users.$.name": new_name}}
+    )
+    return 'ok'
+
+
+
+
 @api_router.post("/event/{event_id}/expense", tags=['expense'])
 async def add_expense(request: Request, event_id, expense: schemas.CreateExpense, db=Depends(database.init_db)):
 

@@ -11,6 +11,7 @@ import Datepicker from "react-tailwindcss-datepicker";
 import TotalPriceStat from "@/app/wallet/[id]/components/TotalPriceStat";
 import AddNewExpenseButton from "@/app/wallet/[id]/components/AddNewExpenseButton";
 import LastExpenses from "@/app/wallet/[id]/components/LastExpenses";
+import UsersWithAvatars from "@/app/wallet/[id]/components/UsersWithAvatars";
 
 export default function Wallet({params}) {
     const {id} = params;
@@ -204,6 +205,7 @@ export default function Wallet({params}) {
             <div></div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 flex m-2 md:hidden">
+                <UsersWithAvatars wallet={wallet} setLoading={setLoading} fetchData={fetchData}/>
                 <AddNewExpenseButton wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
                 <TotalPriceStat wallet={wallet}/>
                 <LastExpenses wallet={wallet}/>

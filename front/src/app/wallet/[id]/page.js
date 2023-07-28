@@ -207,7 +207,9 @@ export default function Wallet({params}) {
                 <AddNewExpenseButton wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
                 <TotalPriceStat wallet={wallet}/>
                 <LastExpenses wallet={wallet}/>
+                <Users wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
                 <Debts wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
+
 
                 {/*<p className="text-xl">Последние расходы</p>*/}
                 {/*<div className="h-32 carousel carousel-vertical rounded-box rounded-xl">*/}

@@ -50,7 +50,7 @@ services:
       depends_on:
         - fast-api
       command: >
-        sh -c "npm run build && npm run start"
+        sh -c "npm i && npm run build && npm run start"
         
 
   nginx:

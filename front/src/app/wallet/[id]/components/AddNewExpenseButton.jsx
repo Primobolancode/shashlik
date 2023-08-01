@@ -182,7 +182,7 @@ export default function AddNewExpenseButton({wallet, fetchData, setLoading}) {
                     <label className="label">
                         <span className="label-text-alt">Кто платит?</span>
                     </label>
-                    <select className="select select-bordered w-full max-w p-2">
+                    <select className="select select-bordered w-full max-w p-2" onChange={event => setCreditor(event.target.value)}>
                         <option disabled defaultValue>Кто платит?</option>
                         {wallet.users.map((user) => (
                             // eslint-disable-next-line react/jsx-key

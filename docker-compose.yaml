@@ -50,7 +50,7 @@ services:
       depends_on:
         - fast-api
       command: >
-        sh -c "npm run dev"
+        sh -c "npm run build && npm run start"
         
         
 
@@ -70,3 +70,7 @@ services:
 #    volumes:
 #      - ./certbot/www/:/var/www/certbot/:rw
 #      - ./certbot/conf/:/etc/letsencrypt/:rw
+
+
+
+#--host 0.0.0.0 --port 8000 --reload --workers 2 --proxy-headers --lifespan on

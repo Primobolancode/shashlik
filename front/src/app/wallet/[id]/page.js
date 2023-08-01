@@ -12,11 +12,17 @@ import TotalPriceStat from "@/app/wallet/[id]/components/TotalPriceStat";
 import AddNewExpenseButton from "@/app/wallet/[id]/components/AddNewExpenseButton";
 import LastExpenses from "@/app/wallet/[id]/components/LastExpenses";
 import UsersWithAvatars from "@/app/wallet/[id]/components/UsersWithAvatars";
+import NewLastExpenses from "@/app/wallet/[id]/components/NewLastExpenses";
+import ExpenseCarousel from "@/app/wallet/[id]/components/ExpenseCarousel";
+import styles from './styles.module.css'
+import PseudoBorder from "@/app/wallet/[id]/components/chart/PseudoBorder";
+import DebtsList from "@/app/wallet/[id]/components/DebtsList";
 
 export default function Wallet({params}) {
     const {id} = params;
     const [wallet, setWallet] = useState();
     const [loading, setLoading] = useState(true);
+
 
 
     // const [expenseSum, setExpenseSum] = useState(parseFloat(0.0))
@@ -204,157 +210,17 @@ export default function Wallet({params}) {
 
             <div></div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 flex m-2 md:hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 flex m-2 md:hidden">
                 <UsersWithAvatars wallet={wallet} setLoading={setLoading} fetchData={fetchData}/>
+                <div className="divider p-0 m-0"></div>
+                <ExpenseCarousel wallet={wallet}/>
                 <AddNewExpenseButton wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
-                <TotalPriceStat wallet={wallet}/>
-                <LastExpenses wallet={wallet}/>
-                <Users wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
-                <Debts wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>
-
-
-                {/*<p className="text-xl">Последние расходы</p>*/}
-                {/*<div className="h-32 carousel carousel-vertical rounded-box rounded-xl">*/}
-                {/*    <div className="carousel-item h-full">*/}
-                {/*        <div className="bg-danger h-full border border-b-indigo-100 w-full">*/}
-                {/*            123*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*    <div className="carousel-item h-full">*/}
-                {/*        <div className="bg-danger h-full border border-b-indigo-100 w-full">*/}
-                {/*            <div>123</div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-
-
-                {/*<div className="overflow-x-auto">*/}
-                {/*    <table className="table table-xl">*/}
-                {/*        <thead>*/}
-                {/*        <tr>*/}
-                {/*            <th>Имя</th>*/}
-                {/*        </tr>*/}
-                {/*        </thead>*/}
-                {/*        <tbody>*/}
-                {/*        {wallet.users.map((user) => (*/}
-                {/*            <tr>*/}
-                {/*                <th>{user.name}</th>*/}
-                {/*            </tr>*/}
-                {/*        ))}*/}
-
-                {/*        </tbody>*/}
-                {/*    </table>*/}
-                {/*</div>*/}
-
-
-                {/*    <div>*/}
-                {/*        <div className="card bg-neutral text-neutral-content">*/}
-                {/*            <div className="card-body items-center text-center">*/}
-                {/*                <h2 className="card-title">Cookies!</h2>*/}
-                {/*                <p>We are using cookies for no reason.</p>*/}
-                {/*                <div className="card-actions justify-end">*/}
-                {/*                    <button className="btn btn-primary">Accept</button>*/}
-                {/*                    <button className="btn btn-ghost">Deny</button>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*    <div>*/}
-                {/*        <div className="card bg-neutral text-neutral-content">*/}
-                {/*            <div className="card-body items-center text-center">*/}
-                {/*                <h2 className="card-title">Cookies!</h2>*/}
-                {/*                <p>We are using cookies for no reason.</p>*/}
-                {/*                <div className="card-actions justify-end">*/}
-                {/*                    <button className="btn btn-primary">Accept</button>*/}
-                {/*                    <button className="btn btn-ghost">Deny</button>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*    <div>*/}
-                {/*        <div className="card bg-neutral text-neutral-content">*/}
-                {/*            <div className="card-body items-center text-center">*/}
-                {/*                <h2 className="card-title">Cookies!</h2>*/}
-                {/*                <p>We are using cookies for no reason.</p>*/}
-                {/*                <div className="card-actions justify-end">*/}
-                {/*                    <button className="btn btn-primary">Accept</button>*/}
-                {/*                    <button className="btn btn-ghost">Deny</button>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*    <div>*/}
-                {/*        <div className="card bg-neutral text-neutral-content">*/}
-                {/*            <div className="card-body items-center text-center">*/}
-                {/*                <h2 className="card-title">Cookies!</h2>*/}
-                {/*                <p>We are using cookies for no reason.</p>*/}
-                {/*                <div className="card-actions justify-end">*/}
-                {/*                    <button className="btn btn-primary">Accept</button>*/}
-                {/*                    <button className="btn btn-ghost">Deny</button>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*    <div>*/}
-                {/*        <div className="card bg-neutral text-neutral-content">*/}
-                {/*            <div className="card-body items-center text-center">*/}
-                {/*                <h2 className="card-title">Cookies!</h2>*/}
-                {/*                <p>We are using cookies for no reason.</p>*/}
-                {/*                <div className="card-actions justify-end">*/}
-                {/*                    <button className="btn btn-primary">Accept</button>*/}
-                {/*                    <button className="btn btn-ghost">Deny</button>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*    <div>*/}
-                {/*        <div className="card bg-neutral text-neutral-content">*/}
-                {/*            <div className="card-body items-center text-center">*/}
-                {/*                <h2 className="card-title">Cookies!</h2>*/}
-                {/*                <p>We are using cookies for no reason.</p>*/}
-                {/*                <div className="card-actions justify-end">*/}
-                {/*                    <button className="btn btn-primary">Accept</button>*/}
-                {/*                    <button className="btn btn-ghost">Deny</button>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
+                <div className="divider p-0 m-0"></div>
+                <DebtsList wallet={wallet}/>
             </div>
-            <div className="btm-nav md:hidden">
-                <button className={"active"}>
-                    <Icon icon={"material-symbols:home-outline-rounded"} className={"text-2xl"}></Icon>
-                    <span className="btm-nav-label">Home</span>
-                </button>
-                <button>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <span className="btm-nav-label">Warnings</span>
-                </button>
-                <button>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                    <span className="btm-nav-label">Statics</span>
-                </button>
-            </div>
-
-
-            {/*<div className="min-h-screen flex flex-col">*/}
-            {/*    <div className="flex-grow overflow-y-auto px-4 py-8">*/}
-
-
-            {/*<div className="py-8 flex grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4">*/}
-            {/*    <Users wallet={wallet} setLoading={setLoading} fetchData={fetchData}/>*/}
-            {/*    <Expenses wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>*/}
-            {/*    <Debts wallet={wallet} fetchData={fetchData} setLoading={setLoading}/>*/}
-            {/*</div>*/}
-            {/*</div>*/}
-            {/*</div>*/}
         </>
     );
 }
+
+
+//

@@ -71,6 +71,7 @@ async def optimize_debts(event_id, collection):
             balances[-1]['balance'] = big + small
             balances.pop(0)
         else:
+            print(balances)
             balances.pop(0)
             balances.pop()
 

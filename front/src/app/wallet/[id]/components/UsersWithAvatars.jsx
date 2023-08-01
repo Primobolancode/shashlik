@@ -127,10 +127,10 @@ export default function UsersWithAvatars({wallet, fetchData, setLoading}) {
             </div>
 
 
-            <dialog id="add_new_user" className="modal modal-top mt-14">
+            <dialog id="add_new_user" className="modal modal-top mt-16">
                 <form method="dialog" className="modal-box">
                     <button
-                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕
+                        className="btn btn-sm btn-circle btn-ghost absolute right-4 top-2">✕
                     </button>
                     <span
                         className="pb-2 flex justify-center items-center m-auto p-auto">Имя пользователя</span>
@@ -167,6 +167,7 @@ export default function UsersWithAvatars({wallet, fetchData, setLoading}) {
                                                         <img
                                                             src={`https://api.dicebear.com/6.x/adventurer/svg?seed=${user.name}`}
                                                             alt="Avatar Tailwind CSS Component"/>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -206,13 +207,13 @@ export default function UsersWithAvatars({wallet, fetchData, setLoading}) {
                         (
                             <>
                                 <div className="mt-4 text-center">
-                                    Чтобы кому-то что-то занять, нужно это что-то иметь.
+                                    Чтобы кому-то что-то одолжить, нужно этого кого-то иметь.
                                 </div>
                                 <div className="flex justify-center mt-4">
                                     <button
                                         className="btn"
                                         onClick={() => window.add_new_user.showModal()}
-                                    >Добавить первого пользователя
+                                    >Добавить пользователя
                                     </button>
                                 </div>
                             </>

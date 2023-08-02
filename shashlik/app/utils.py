@@ -35,7 +35,7 @@ async def optimize_debts(event_id, collection):
 
     balances.sort(key=sort_by_balance)
     balances.reverse()
-    balances = [{"id": balance["id"], 'balance': round(balance['balance'], 2)} for balance in balances]
+    balances = [{"id": balance["id"], 'balance': round(balance['balance'], 3)} for balance in balances]
     i = 0
     while i < len(balances):
         if balances[i]['balance'] == 0:
@@ -45,36 +45,39 @@ async def optimize_debts(event_id, collection):
 
     new_debts = []
 
-    while len(balances) > 0:
-        big = balances[0]['balance']
-        small = balances[-1]['balance']
-        if big == 0 and small == 0:
-            balances.pop(0)
-            balances.pop()
-            continue
-        elif big == 0:
-            balances.pop(0)
-            continue
-        elif small == 0:
-            balances.pop()
-        new_debts.append(
-            DebtToSave(
-                creditor=balances[0]['id'],
-                debtor=balances[-1]['id'],
-                summ=abs(small if abs(big) > abs(small) else big),
-                repaid=False,
-            )
-        )
-        if abs(big) > abs(small):
-            balances[0]['balance'] = round(big + small, 2)
-            balances.pop()
-        elif abs(big) < abs(small):
-            balances[-1]['balance'] = round(big + small, 2)
-            balances.pop(0)
+    while len(balances) > 1:
+        if len(balances) == 1:
+            pass
         else:
-            print(balances)
-            balances.pop(0)
-            balances.pop()
+            big = balances[0]['balance']
+            small = balances[-1]['balance']
+            if big == 0 and small == 0:
+                balances.pop(0)
+                balances.pop()
+                continue
+            elif big == 0:
+                balances.pop(0)
+                continue
+            elif small == 0:
+                balances.pop()
+            new_debts.append(
+                DebtToSave(
+                    creditor=balances[0]['id'],
+                    debtor=balances[-1]['id'],
+                    summ=abs(small if abs(big) > abs(small) else big),
+                    repaid=False,
+                )
+            )
+            if abs(big) > abs(small):
+                balances[0]['balance'] = round(big + small, 3)
+                balances.pop()
+            elif abs(big) < abs(small):
+                balances[-1]['balance'] = round(big + small, 3)
+                balances.pop(0)
+            else:
+                print(balances)
+                balances.pop(0)
+                balances.pop()
 
     for repaid_debt in [i for i in event['debts'] if i['repaid'] == True]:
         new_debts.append(

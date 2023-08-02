@@ -23,7 +23,7 @@ export default function DebtsList({wallet}) {
                                 <td>
                                     <div className="flex flex-col items-center">
                                         <div className="flex self-center">
-                                            <div className="font-bold text-2xl">{debt.summ}</div>
+                                            <div className="font-bold text-2xl">{(debt.summ).toFixed(2)}</div>
                                             <div className="font-thin">{`₽`}</div>
                                         </div>
                                         <div>перечисляет</div>

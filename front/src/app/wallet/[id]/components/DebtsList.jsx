@@ -17,7 +17,7 @@ export default function DebtsList({wallet}) {
                             <tr key={debt.id}>
                                 <td>
                                     <img src={`https://api.dicebear.com/6.x/adventurer/svg?seed=${debt.debtor.name}`}
-                                         className="w-12 h-12 rounded-full " alt={''}/>
+                                         className="w-12 h-12 rounded-full" alt={''}/>
                                     {debt.debtor.name}
                                 </td>
                                 <td>

@@ -1,22 +1,53 @@
 import {Icon} from "@iconify/react";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import domain from "config";
 import Users from "@/app/wallet/[id]/components/Users";
 
-export default function UsersWithAvatars({wallet, fetchData, setLoading}) {
+export default function UsersWithAvatars({wallet, fetchData, setLoading, isMac}) {
     const id = wallet._id
     const [newUserName, setNewUserName] = useState('')
     const [usersPictures, setUsersPictures] = useState('')
     const [editUser, setEditUser] = useState()
 
 
+    const manageIsOpen = useRef(null)
+    const addUserIsOpen = useRef(null)
+
+    function openAddNewUser() {
+        window.add_new_user.showModal();
+        addUserIsOpen.current.focus();
+    }
+
+
     useEffect(() => {
-        console.log(editUser);
+        // console.log(editUser);
     }, [editUser]);
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if ((event.altKey || event.metaKey) && event.key === 'u') {
+                window.manage_users.showModal();
+                if ((wallet.users).length === 0) {
+                    manageIsOpen.current.focus();
+                }
+            }
+            if ((event.altKey || event.metaKey) && event.key === 'i') {
+                window.add_new_user.showModal();
+                addUserIsOpen.current.focus();
+            }
+            if ((event.altKey || event.metaKey) && event.key === 'e') {
+                window.add_new_expense.showModal();
+            }
+
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
 
 
     const editUserFunc = (user) => {
-
         setEditUser(user)
         window.edit_user.showModal()
     }
@@ -91,6 +122,15 @@ export default function UsersWithAvatars({wallet, fetchData, setLoading}) {
     }
 
 
+    const handleEnterAddNewUserDown = event => {
+
+        if (event.keyCode === 13) {
+            // console.log('enter')
+            addUser();
+        }
+    };
+
+
     return (
         <>
             <div className="flex w-full justify-between">
@@ -106,26 +146,32 @@ export default function UsersWithAvatars({wallet, fetchData, setLoading}) {
 
                 </div>
                 <div className="flex gap-1">
-                    <div>
+                    <div className="flex flex-col justify-center items-center">
                         <div
                             className="flex items-center justify-center  w-12 h-12 rounded-full border-dashed border bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-400">
                             <div className="tooltip tooltip-left" data-tip="Изменить пользователей">
-                                <Icon icon="la:users" style={{fontSize: '25px'}}
+                                <Icon icon="la:users" style={{fontSize: '30px'}}
                                       onClick={() => window.manage_users.showModal()}/>
                             </div>
                         </div>
+                        <div>{isMac ? <span className="text-sm text-gray-400">&#8984; + i</span> :
+                            <span>alt + i</span>}</div>
                     </div>
+                    <div className="flex flex-col justify-center items-center">
+                        <div
+                            className="flex items-center justify-center  w-12 h-12 rounded-full border-dashed border bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-400">
+                            <div className="tooltip tooltip-left" data-tip="Добавить пользователя">
+                                <Icon icon="material-symbols:add" style={{fontSize: '25px'}}
+                                      onClick={() => window.add_new_user.showModal()}
 
-                    <div
-                        className="flex items-center justify-center  w-12 h-12 rounded-full border-dashed border bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-400">
-                        <div className="tooltip tooltip-left" data-tip="Добавить пользователя">
-                            <Icon icon="material-symbols:add" style={{fontSize: '25px'}}
-                                  onClick={() => window.add_new_user.showModal()}/>
+                                />
+                            </div>
                         </div>
+                        <div>{isMac ? <span className="text-sm text-gray-400">&#8984; + u</span> :
+                            <span>alt + u</span>}</div>
                     </div>
                 </div>
             </div>
-
 
             <dialog id="add_new_user" className="modal modal-top mt-16">
                 <form method="dialog" className="modal-box">
@@ -135,9 +181,13 @@ export default function UsersWithAvatars({wallet, fetchData, setLoading}) {
                     <span
                         className="pb-2 flex justify-center items-center m-auto p-auto">Имя пользователя</span>
 
-                    <input onChange={event => setNewUserName(event.target.value)}
-                           type="text" placeholder=""
-                           className="input mt-4 input-bordered input-primary w-full max-w"/>
+                    <input
+                        onChange={event => setNewUserName(event.target.value)}
+                        type="text" placeholder=""
+                        className="input mt-4 input-bordered input-primary w-full max-w"
+                        ref={addUserIsOpen}
+                        onKeyDown={event => handleEnterAddNewUserDown(event)}
+                    />
                     <button className="mt-2 btn flex justify-center items-center m-auto p-auto"
                             onClick={() => addUser()}>Добавить
                     </button>
@@ -211,8 +261,12 @@ export default function UsersWithAvatars({wallet, fetchData, setLoading}) {
                                 </div>
                                 <div className="flex justify-center mt-4">
                                     <button
-                                        className="btn"
-                                        onClick={() => window.add_new_user.showModal()}
+                                        type={"submit"}
+                                        ref={manageIsOpen}
+                                        className="btn add-new-user-manage-user"
+                                        // onClick={() => window.add_new_user.showModal()}
+                                        onClick={() => openAddNewUser()}
+
                                     >Добавить пользователя
                                     </button>
                                 </div>
@@ -225,7 +279,6 @@ export default function UsersWithAvatars({wallet, fetchData, setLoading}) {
                 </form>
             </dialog>
 
-
             <dialog id="edit_user" className="modal modal-top mt-14">
                 <form method="dialog" className="modal-box">
                     <button
@@ -235,7 +288,7 @@ export default function UsersWithAvatars({wallet, fetchData, setLoading}) {
                         className="pb-2 flex justify-center items-center m-auto p-auto">Имя пользователя</span>
 
                     <input
-                          onChange={event => setEditUser({ ...editUser, name: event.target.value })}
+                        onChange={event => setEditUser({...editUser, name: event.target.value})}
                         type="text" placeholder=""
                         defaultValue={editUser?.name}
                         className="input mt-4 input-bordered input-primary w-full max-w"/>

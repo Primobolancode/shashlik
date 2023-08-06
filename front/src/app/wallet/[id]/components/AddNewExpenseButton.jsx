@@ -2,7 +2,7 @@ import Datepicker from "react-tailwindcss-datepicker";
 import React, {useCallback, useEffect, useState} from "react";
 import domain from "config";
 import {Icon} from "@iconify/react";
-export default function AddNewExpenseButton({wallet, fetchData, setLoading}) {
+export default function AddNewExpenseButton({wallet, fetchData, setLoading, isMac}) {
 
     const [expenseSum, setExpenseSum] = useState(parseFloat("0"))
     const [freeMethod, setFreeMethod] = useState('equal')
@@ -15,6 +15,12 @@ export default function AddNewExpenseButton({wallet, fetchData, setLoading}) {
 
     const [expenseTitle, setExpenseTitle] = useState('')
     const [creditor, setCreditor] = useState()
+
+
+
+
+
+
 
 
     const addExpense = async () => {
@@ -149,8 +155,12 @@ export default function AddNewExpenseButton({wallet, fetchData, setLoading}) {
                 onClick={() => window.add_new_expense.showModal()}
                 disabled={wallet.users.length <= 0}
             >
-                Добавить расход <Icon icon="material-symbols:add" style={{fontSize: '22px'}}/>
+                Добавить расход
+                {/*<Icon icon="material-symbols:add" style={{fontSize: '22px'}}/>*/}
+                {isMac ? <span className="text-sm text-gray-400">&#8984;+e</span> :
+                            <span>alt+e</span>}
             </button>
+
             <dialog id="add_new_expense" className="modal">
                 <form method="dialog" className="modal-box">
                     {/*TITLE*/}

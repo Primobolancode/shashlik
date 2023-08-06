@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/navigation";
 import domain from 'config.js'
 
@@ -9,7 +9,16 @@ export default function CreateWallet(params, searchParams) {
     const router = useRouter(); // Получаем объект 'router' с помощью хука 'useRouter' из Next.js
     const [wallet, setWallet] = useState(null);
     const [walletName, setWalletName] = useState('')
+    const focusRef = useRef(null);
+    useEffect(() => {
+        focusRef.current.focus();
+    }, []);
 
+    const handleEnterAddNewUserDown = event => {
+        if (event.keyCode === 13) {
+            fetchData();
+        }
+    };
 
     const fetchData = async () => {
         const requestOptions = {
@@ -37,8 +46,11 @@ export default function CreateWallet(params, searchParams) {
         <div className="flex h-screen">
             <div className="m-auto p-auto">
                 <span className="pb-2 flex justify-center items-center m-auto p-auto">Назовите мероприятие</span>
-                <input onChange={event => setWalletName(event.target.value)} type="text" placeholder=""
-                       className="input input-bordered input-primary w-full max-w-xs"/>
+                <input
+                    ref={focusRef}
+                    onChange={event => setWalletName(event.target.value)} type="text" placeholder=""
+                    onKeyDown={event => handleEnterAddNewUserDown(event)}
+                    className="input input-bordered input-primary w-full max-w-xs"/>
                 <button className="mt-2 btn flex justify-center items-center m-auto p-auto"
                         onClick={() => fetchData()}>Создать
                 </button>

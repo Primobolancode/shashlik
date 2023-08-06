@@ -38,7 +38,7 @@ async def get_event_data(event_id, db=Depends(database.init_db)):
     result = await collection.find_one(
         {"_id": ObjectId(event_id)}
     )
-    print(result)
+
     result['_id'] = str(result['_id'])
     result['users'] = [schemas.UserOutput(name=user['name'], id=str(user['_id'])) for user in result['users']]
     users = result['users']
@@ -137,6 +137,7 @@ async def add_expense(request: Request, event_id, expense: schemas.CreateExpense
             "title": expense.title,
             "creditor": ObjectId(expense.creditor_id),
             "debtors": [ObjectId(i) for i in expense.debtors_id],
+            # "summ": round(float(expense.summ), 2),
             "summ": expense.summ,
             "datetime": expense.datetime,
         }}}

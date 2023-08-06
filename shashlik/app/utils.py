@@ -1,5 +1,3 @@
-from _decimal import ROUND_HALF_DOWN
-
 from bson import ObjectId
 from decimal import Decimal, ROUND_HALF_UP, ROUND_CEILING
 from app.schemas import DebtToSave
@@ -8,7 +6,7 @@ def generate_debts(creditor: str, debtors: list, summ: float, reverse=False):
     all_created_debt = [DebtToSave(
         creditor=str(creditor) if not reverse else str(debtor),
         debtor=str(debtor) if not reverse else str(creditor),
-        summ=summ / len(debtors),
+        summ=summ/len(debtors),
         repaid=False,
     ) for debtor in debtors]
 
@@ -20,36 +18,35 @@ def sort_by_balance(user):
 
 
 async def optimize_debts(event_id, collection):
+    # REWRITE AND FIND OUT HOW TO USE DECIMAL AND TEST WITH .001 PLACES
+
     event = await collection.find_one({"_id": ObjectId(event_id)})
 
     balances = []
     for user in event['users']:
-        # balances.append(
-        #     {
-        #         "id": str(user['_id']),
-        #         "balance": sum(d["summ"] for d in event['debts'] if
-        #                        d['repaid'] == False and str(d['creditor']) == str(user['_id']))
-        #                    -
-        #                    sum(d["summ"] for d in event['debts'] if
-        #                        d['repaid'] == False and str(d['debtor']) == str(user['_id']))
-        #     }
-        # )
-        creditor_sum = sum(Decimal(d["summ"]) for d in event['debts'] if
-                           not d['repaid'] and str(d['creditor']) == str(user['_id']))
-        debtor_sum = sum(Decimal(d["summ"]) for d in event['debts'] if
-                         not d['repaid'] and str(d['debtor']) == str(user['_id']))
+
+        # creditor_sum = sum(Decimal(d["summ"]) for d in event['debts'] if
+        #                    not d['repaid'] and str(d['creditor']) == str(user['_id']))
+        # debtor_sum = sum(Decimal(d["summ"]) for d in event['debts'] if
+        #                  not d['repaid'] and str(d['debtor']) == str(user['_id']))
+        # balance = creditor_sum - debtor_sum
+        # if balance != Decimal('0'):
+        #     balances.append({"id": str(user['_id']), 'balance': balance})
+        creditor_sum: float = [sum(d["summ"] for d in event['debts'] if
+                            not d['repaid'] and str(d['creditor']) == str(user['_id']))][0]
+
+        debtor_sum: float = [float(sum(d["summ"] for d in event['debts'] if
+                                not d['repaid'] and str(d['debtor']) == str(user['_id'])))][0]
+
         balance = creditor_sum - debtor_sum
-        if balance != Decimal('0'):
+
+        if balance != 0:
             balances.append({"id": str(user['_id']), 'balance': balance})
 
     balances.sort(key=sort_by_balance)
     balances.reverse()
-    # balances = [{"id": balance["id"], 'balance': round(balance['balance'], 2)} for balance in balances]
-    # balances = [{"id": balance["id"], 'balance': round(math.ceil(balance['balance'] * 100.000) / 100.000, 2)} for balance in balances]
-    # balances = [{"id": balance["id"], 'balance': balance['balance'].quantize(Decimal('0.00001'), rounding=ROUND_HALF_UP)}
-    #             for balance in balances]
-    balances = [{"id": balance["id"], 'balance': custom_round(balance['balance'])}
-                for balance in balances if balance['balance'] != Decimal('0')]
+    balances = [{"id": balance["id"], 'balance': balance['balance']}
+                for balance in balances if balance['balance'] != 0]
 
     i = 0
     while i < len(balances):
@@ -81,8 +78,6 @@ async def optimize_debts(event_id, collection):
             if abs(round(big, 2)) == abs(round(small, 2)) == 0:
                 balances.pop(0)
                 balances.pop()
-
-            # summ = round(abs(round(small, 2) if abs(big) > abs(small) else round(big, 2)), 2)
             summ = abs(small) if abs(big) > abs(small) else abs(big)
             if summ != 0:
                 new_debts.append(
@@ -111,7 +106,7 @@ async def optimize_debts(event_id, collection):
             DebtToSave(
                 creditor=repaid_debt['creditor'],
                 debtor=repaid_debt['debtor'],
-                summ=round(repaid_debt['summ'], 2),
+                summ=custom_round(repaid_debt['summ']),
                 repaid=True,
             )
         )
@@ -123,13 +118,15 @@ async def optimize_debts(event_id, collection):
     if new_debts:
         result = await collection.update_one(
             {"_id": ObjectId(event_id)},
-            {"$set": {"debts": [{"_id": ObjectId(), "creditor": debt.creditor, "debtor": debt.debtor, "summ": debt.summ,
+            {"$set": {"debts": [{"_id": ObjectId(), "creditor": debt.creditor, "debtor": debt.debtor, "summ": custom_round(debt.summ),
                                  "repaid": debt.repaid} for debt in new_debts]}},
         )
 
 def custom_round(value):
+    precision = str(value).split('.')[1]
+    if len(precision) >= 3:
+        if precision[1] == '9':
+            value = math.ceil(value)
+    return value
 
-    rounded_value = value.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
-    if rounded_value % 1 == 0:
-        return value.quantize(Decimal('1'), rounding=ROUND_HALF_UP)
-    return rounded_value
+

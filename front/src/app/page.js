@@ -1,117 +1,281 @@
+'use client'
 import Image from 'next/image'
+import {Icon} from "@iconify/react";
+import {LANGS} from "../../langs";
+import React, {useCallback, useEffect, useState} from "react";
+import Datepicker from "react-tailwindcss-datepicker";
 
 export default function Home() {
+    const [lang, setLang] = useState(LANGS[0])
+    const [mode, setMode] = useState('dark')
+    const [wallet, setWallet] = useState({users: [{name: "John"}, {name: "Ann"}]});
+    const [debtors, setDebtors] = useState([wallet.users])
+    const [expenseSum, setExpenseSum] = useState(parseFloat("12.33"))
+    const [creditor, setCreditor] = useState()
+    const [eachShare, setEachShare] = useState(0)
+    const [shareMethod, setShareMethod] = useState('percent')
+    const [eachPercent, setEachPercent] = useState([]);
 
-  const lang = "RU"
+    useEffect(() => {
+
+        if (debtors.length > 0) {
+            setEachShare(
+                parseFloat(expenseSum / debtors?.length)
+            )
+        } else setEachShare(0)
+
+        const initalPercent = wallet?.users.reduce((acc, user) => {
+            if (shareMethod === 'percent') {
+                acc[user.id] = 100 / (wallet.users).length;
+                return acc;
+            }
+            if (shareMethod === 'sigma') {
+                acc[user.id] = parseFloat(expenseSum / (wallet.users).length);
+                return acc;
+            }
+            if (shareMethod === 'divider') {
+                acc[user.id] = 1;
+                return acc
+            }
+        }, {});
+        setEachPercent(initalPercent)
+    }, [expenseSum])
 
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    useEffect(() => {
+        if (debtors?.length > 0) {
+            setEachShare(
+                parseFloat(expenseSum / debtors?.length)
+            )
+        } else setEachShare(0);
+    }, [debtors]);
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+    useEffect(() => {
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+        if (debtors.length > 0) {
+            setEachShare(
+                parseFloat(expenseSum / debtors?.length)
+            )
+        } else setEachShare(0)
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+        const initalPercent = wallet?.users.reduce((acc, user) => {
+            if (shareMethod === 'percent') {
+                acc[user.id] = 100 / (wallet.users).length;
+                return acc;
+            }
+            if (shareMethod === 'sigma') {
+                acc[user.id] = parseFloat(expenseSum / (wallet.users).length);
+                return acc;
+            }
+            if (shareMethod === 'divider') {
+                acc[user.id] = 1;
+                return acc
+            }
+        }, {});
+        setEachPercent(initalPercent)
+    }, [expenseSum])
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
+    const handleDebtors = useCallback((event) => {
+        const userId = event.target.value;
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+
+        setDebtors((prevDebtors) => {
+            if (event.target.checked) {
+                return [...prevDebtors, userId];
+            } else {
+                return prevDebtors.filter((id) => id !== userId);
+            }
+        });
+    }, []);
+
+    function roundNumber(number) {
+        const decimalPlaces = number.toString().split('.')[1]?.length || 0;
+
+        if (decimalPlaces > 2) {
+            return `~ ${Number(number.toFixed(2))}`;
+        }
+        return number;
+    }
+
+
+    return (
+        <>
+            <div className="navbar bg-base-100">
+                <div className="flex-1">
+                    <a className="btn btn-ghost normal-case text-xl">PAYWAL</a>
+                </div>
+                <div className="flex-none">
+                    <ul className="menu menu-horizontal px-1">
+                        <li>
+                            <details>
+                                <summary>
+                                    <Icon icon="mdi:language" width="30px" height="30px"/>
+                                </summary>
+                                <ul className="p-2 bg-base-100">
+                                    {LANGS.map((currentLang, index) => (
+                                        // eslint-disable-next-line react/jsx-key
+                                        <li key={index}>
+                                            <a
+                                                className={`${currentLang.Name === lang.Name ? "bg-gray-500 text-gray-200" : ""}`}
+                                                onClick={() => setLang(LANGS[index])}
+                                            >
+                                                {currentLang.Name}
+                                            </a>
+                                        </li>
+                                    ))}
+
+
+                                </ul>
+                            </details>
+
+                        </li>
+                        <li>
+                            <a onClick={() => mode === "light" ? setMode("dark") : setMode("light")}>
+                                {
+                                    mode === "light" ?
+                                        <Icon width="30px" height="30px"
+                                              icon="material-symbols:dark-mode-outline-rounded"/>
+                                        :
+                                        <Icon width="30px" height="30px" icon="material-symbols:sunny-outline"/>
+                                }
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+            <section className="flex w-full border border-1 flex-row p-2">
+                <div className="flex flex-col w-1/2 h-full">
+                    <div className="flex pl-6 pt-4 underline cursor-pointer text-sm">
+                        <span>v0.22</span>
+                    </div>
+                    <div className="flex flex-col thin flex-grow">
+                        <div className="text-base-content text-4xl flex font-bold pl-2">
+                            Самый популярный
+                        </div>
+                        <div className="text-base-content text-2xl flex pl-2 font-thin">
+                            способ
+                        </div>
+                        <div className="text-base-content text-4xl flex font-bold p-2">
+      <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+        разделить счет с друзьями
+      </span>
+                        </div>
+                        <div className="text-base-content text-sm flex text-gray-200 font-thin pl-2">
+                            или второй половинкой, поровну или долями или еще как угодно
+                        </div>
+                    </div>
+                </div>
+                <div className="w-1/2 ">
+                    <form method="dialog" className="modal-box transform -rotate-5 skew-x-12">
+                        {/*TITLE*/}
+                        <h3 className="font-bold text-lg pb-2">Добавление расхода</h3>
+                        {/*NAME*/}
+                        <label className="label">
+                            <span className="label-text-alt">Название</span>
+                        </label>
+                        <input type="text" placeholder="билеты в кино, например"
+                            // onChange={event => setExpenseTitle(event.target.value)}
+                               className="input input-bordered w-full max-w p-2"/>
+                        {/*DATE*/}
+                        {/*<label className="label">*/}
+                        {/*    <span className="label-text-alt">Дата</span>*/}
+                        {/*</label>*/}
+                        {/*<Datepicker*/}
+                        {/*    inputClassName="input input-bordered w-full max-w"*/}
+                        {/*    startWeekOn="mon"*/}
+                        {/*    i18n={"ru"}*/}
+                        {/*    // value={date}*/}
+                        {/*    // onChange={handleDateChange}*/}
+                        {/*    asSingle={true}*/}
+                        {/*    popoverDirection="down"*/}
+                        {/*    useRange={false}*/}
+                        {/*    primaryColor={"fuchsia"}*/}
+                        {/*    showFooter={true}*/}
+                        {/*    disabled={true}*/}
+                        {/*/>*/}
+                        {/*CREDITOR*/}
+                        <label className="label">
+                            <span className="label-text-alt">Кто платит?</span>
+                        </label>
+                        <select className="select select-bordered w-full max-w p-2"
+                                onChange={event => setCreditor(event.target.value)}>
+                            <option disabled defaultValue>Кто платит?</option>
+                            {wallet?.users.map((user) => (
+                                // eslint-disable-next-line react/jsx-key
+                                <option key={user.id} value={user.id}>{user.name}</option>
+                            ))}
+                        </select>
+                        {/*SUM*/}
+                        <label className="label">
+                            <span className="label-text-alt">Сумма</span>
+                        </label>
+                        <input type="number" placeholder="сумма"
+                               onChange={event => setExpenseSum(parseFloat(event.target.value))}
+                               defaultValue={expenseSum}
+                               className="input join-item input-bordered w-full max-w p-2 mb-2"/>
+
+
+                        {/*<label className="label cursor-pointer p-2 justify-center text-xl">*/}
+                        {/*    <span className={`label-text flex text-sm pr-2 text-xl ${freeMethod === "equal" ? "text-primary" : ""}`}>поровну</span>*/}
+                        {/*    <input type="checkbox" id="method" onChange={handleSetFreeMethod}*/}
+                        {/*           className="toggle toggle-lg"/>*/}
+                        {/*    <span*/}
+                        {/*        className={`label-text flex text-sm pl-2 text-xl ${freeMethod === "free" ? "text-primary" : ""}`}>произвольно</span>*/}
+                        {/*</label>*/}
+
+
+                        {"equal" === "equal"
+                            ?
+                            <>
+                                <div>между</div>
+                                <div className="flex flex-wrap">
+                                    {wallet.users.map((user) => (
+                                        // eslint-disable-next-line react/jsx-key,react/jsx-no-undef
+                                        <React.Fragment key={user.id}>
+                                            <label className={"label flex"}>
+                                                <input type="checkbox"
+                                                       key={user.id}
+                                                       disabled={!expenseSum > 0}
+                                                       className="toggle toggle mr-2"
+                                                       defaultChecked={true}
+                                                       name={user.name}
+                                                       value={user.id}
+                                                       onChange={handleDebtors}
+                                                />
+                                                <span className={`"flex"`}>{user.name}</span>
+                                            </label>
+                                        </React.Fragment>
+                                    ))}
+                                </div>
+                                {eachShare > 0 ? <div className="badge badge-lg p-5 mt-4">
+                                    {debtors.length > 1 ? "по " : ""}
+                                    {roundNumber(eachShare)}</div> : <></>}
+                            </>
+                            :
+                            <>
+
+
+                            </>
+                        }
+
+
+                        <div className="modal-action">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn btn-primary"
+                                // disabled={expenseSum <= 0 || debtors <= 0}
+                                // onClick={addExpense}
+                            >Добавить
+                            </button>
+                            <button className="btn">Отмена</button>
+
+                        </div>
+
+
+                    </form>
+                </div>
+
+            </section>
+        </>
+    )
 }

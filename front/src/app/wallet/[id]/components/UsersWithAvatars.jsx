@@ -173,7 +173,7 @@ export default function UsersWithAvatars({wallet, fetchData, setLoading, isMac})
                 </div>
             </div>
 
-            <dialog id="add_new_user" className="modal modal-top mt-16">
+            <dialog id="add_new_user" className="modal">
                 <form method="dialog" className="modal-box">
                     <button
                         className="btn btn-sm btn-circle btn-ghost absolute right-4 top-2">✕

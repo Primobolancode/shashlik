@@ -3,6 +3,8 @@
 import {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/navigation";
 import domain from 'config.js'
+import {LANGS} from "../../../langs";
+
 
 
 export default function CreateWallet(params, searchParams) {
@@ -45,7 +47,9 @@ export default function CreateWallet(params, searchParams) {
     return (
         <div className="flex h-screen">
             <div className="m-auto p-auto">
-                <span className="pb-2 flex justify-center items-center m-auto p-auto">Назовите мероприятие</span>
+                <span className="pb-2 flex justify-center items-center m-auto p-auto">
+                    Название мероприятия
+                </span>
                 <input
                     ref={focusRef}
                     onChange={event => setWalletName(event.target.value)} type="text" placeholder=""

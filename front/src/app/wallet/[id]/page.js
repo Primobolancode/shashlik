@@ -211,7 +211,7 @@ export default function Wallet({params}) {
 
             <div></div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-1 flex m-2 md:hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-1 gap-1 flex m-2">
                 <UsersWithAvatars wallet={wallet} setLoading={setLoading} fetchData={fetchData} isMac={isMac}/>
                 <div className="divider p-0 m-0"></div>
                 <ExpenseCarousel wallet={wallet}/>

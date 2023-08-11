@@ -34,6 +34,7 @@ export default function ExpenseCarousel({wallet}) {
                                     подробнее
                                 </div>
 
+
                             </div>
                             <div>
                                 <a href={`${(wallet.expenses).length - 1 === index ? "#0" : `#${index + 1}`}`}
